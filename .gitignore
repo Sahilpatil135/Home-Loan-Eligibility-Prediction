@@ -1,0 +1,7 @@
+.venv/
+Home Loan Eligibility Prediction.ipynb
+home_loan_status_predictor.pkl
+loan_data.csv
+requirements.txt
+rf.pkl
+vector.pkl
