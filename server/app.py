@@ -1,11 +1,15 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import pickle
+import joblib
 
 # app instance
 app = Flask(__name__)
 CORS(app)
-model = pickle.load(open('rf.pkl', 'rb'))
+
+model = joblib.load('rf.pkl')
+
+num_cols = ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'EMI', 'EMI_to_Income']
+scalar = joblib.load('vector.pkl')
 
 @app.route('/', methods=['GET'])
 def home():
@@ -14,8 +18,9 @@ def home():
     })
 
 # add route and fuction for predict
-@app.route('/predict', method=['GET', 'POST'])
+@app.route('/predict', methods=['GET', 'POST'])   #can  use only POST method so if else will not come
 def predict():
+    # can use try except exception 
     if request.method == 'POST':
         gender = request.form['gender']
         married = request.form['married']
@@ -30,9 +35,14 @@ def predict():
         LoanAmount = float(request.form['LoanAmount'])
         Loan_Amount_Term = float(request.form['Loan_Amount_Term'])
 
+        # add input validation
+        # Create input array for model
+        # calculate emi and emi to income ratio
+        # Scale numeric features
+        # predict model 
 
     # else :
-        return 
+        return #return prediction using jsonify
     
 
 
