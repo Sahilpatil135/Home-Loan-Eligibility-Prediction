@@ -6,11 +6,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import Navbar from "@/components/navbar/Navbar";
 
 export default function Home() {
   return (
-    <div className="h-screen flex items-center justify-center">
-      <Carousel className="w-full max-w-xs">
+    <div className="flex flex-col">
+      <Navbar />
+      {/* <Carousel className="w-full max-w-xs">
         <CarouselContent>
           {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem key={index}>
@@ -26,7 +28,7 @@ export default function Home() {
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
-      </Carousel>
+      </Carousel> */}
     </div>
   );
 }
