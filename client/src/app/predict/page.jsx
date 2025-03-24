@@ -1,6 +1,6 @@
 "use client"; // Needed for event handling in Next.js App Router
 
-import { React, useState } from 'react'
+import { React, useRef, useState } from 'react'
 
 const page = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +19,7 @@ const page = () => {
   });
 
   const [result, setResult] = useState(null);
+  const resultRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,8 +40,8 @@ const page = () => {
 
       const data = await response.json();
       console.log(data);
-      // alert(`Prediction: ${data.message}`);
       setResult(data);
+      resultRef.current?.scrollIntoView({ behavior : "smooth" });
     } catch (error) {
       console.error("Error:", error);
       alert("Something went wrong!");
@@ -251,7 +252,7 @@ const page = () => {
       </div>
 
       {result && (
-        <div className="predict-output flex justify-center mt-10">
+        <div ref={resultRef} className="predict-output flex justify-center mt-10">
           <div className="bg-[#0F101A] p-10 rounded-3xl shadow-2xl w-full max-w-3xl border border-[#939DB8]/20">
             <h2 className="text-center text-3xl font-semibold text-white mb-4">
               Loan Status:{" "}
