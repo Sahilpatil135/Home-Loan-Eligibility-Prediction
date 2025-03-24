@@ -34,6 +34,17 @@ def predict():
         # Getting JSON data from requests
         data = request.get_json()
 
+        # Validate input
+        required_fields = [
+            'gender', 'married', 'dependents', 'education', 'employed', 
+            'credit', 'area', 'age', 'ApplicantIncome', 
+            'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term'
+        ]
+
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({"error": f"Missing fields: {', '.join(missing_fields)}"}), 400
+
         # Extracting input fields
         input_dict = {
             'Gender': data['gender'],
@@ -70,8 +81,12 @@ def predict():
         # Apply encoding
         input_data.replace(encoding, inplace=True)
 
+        # Save original loan amount before scaling
+        original_loan_amount = input_data['LoanAmount'].iloc[0]
+
         # Calculate EMI and EMI-to-Income ratio
         input_data['EMI'] = input_data.apply(lambda x: calculate_emi(x['LoanAmount'], x['Loan_Amount_Term']), axis=1)
+        EMI_value = input_data['EMI'].iloc[0]
         input_data['EMI_to_Income'] = input_data['EMI'] / (input_data['ApplicantIncome'] + input_data['CoapplicantIncome'])
         EMI_to_income_value = input_data['EMI_to_Income'].iloc[0]
         print(EMI_to_income_value)
@@ -89,7 +104,9 @@ def predict():
         # Return result
         return jsonify({
             "prediction": int(prediction),
-            "message": "Loan Approved" if prediction == 1 and EMI_to_income_value <= 0.4 else "Loan Rejected"
+            "message": "Loan Approved" if prediction == 1 and EMI_to_income_value <= 0.4 else "Loan Rejected",
+            "emi": int(EMI_value),
+            "loanAmount": int(original_loan_amount)
         })
     
     except Exception as e:

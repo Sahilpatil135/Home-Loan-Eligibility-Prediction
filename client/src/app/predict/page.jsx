@@ -3,148 +3,278 @@
 import { React, useState } from 'react'
 
 const page = () => {
-    const [formData, setFormData] = useState({
-        gender: "",
-        married: "",
-        dependents: "",
-        education: "",
-        employed: "",
-        credit: "",
-        area: "",
-        age: "",
-        ApplicantIncome: "",
-        CoapplicantIncome: "",
-        LoanAmount: "",
-        Loan_Amount_Term: "",
-    });
+  const [formData, setFormData] = useState({
+    gender: "",
+    married: "",
+    dependents: "",
+    education: "",
+    employed: "",
+    credit: "",
+    area: "",
+    age: "",
+    ApplicantIncome: "",
+    CoapplicantIncome: "",
+    LoanAmount: "",
+    Loan_Amount_Term: "",
+  });
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        console.log(formData)
-    };
+  const [result, setResult] = useState(null);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevents page reload
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log(formData)
+  };
 
-        try {
-            const response = await fetch("http://localhost:8080/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData), // Send JSON data to Flask
-            });
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevents page reload
 
-            const data = await response.json();
-            console.log(data)
-            alert(`Prediction: ${data.message}`);
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Something went wrong!");
-        }
-    };
+    try {
+      const response = await fetch("http://localhost:8080/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData), // Send JSON data to Flask
+      });
 
-    return (
-        <div className="flex flex-col items-center justify-center">
-            <h1 className="mb-4">Enter your details</h1>
-            <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg shadow-md" >
-                <div className="pred-gender">
-                    <label htmlFor="">Gender</label>
-                    <select name="gender" id="gender" value={formData.gender} onChange={handleChange} required className="border p-2 w-full">
-                        <option value="">-- select Gender --</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                </div>
+      const data = await response.json();
+      console.log(data);
+      // alert(`Prediction: ${data.message}`);
+      setResult(data);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong!");
+    }
+  };
 
-                <div className="pred-married">
-                    <label htmlFor="">Married Status</label>
-                    <select name="married" id="married" value={formData.married} onChange={handleChange} required className="border p-2 w-full">
-                        <option value="">-- select Married Status --</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
+  return (
+    <div className="flex flex-col min-h-screen bg-[#0c0c14] text-white p-14 pt-26">
+      <h1 className="text-4xl mb-6 text-center">🏡 Home Loan Eligibility</h1>
 
-                <div className="pred-dependents">
-                    <label htmlFor="">Dependents</label>
-                    <select name="dependents" id="dependents" value={formData.dependents} onChange={handleChange} required className="border p-2 w-full">
-                        <option value="">-- select Dependents --</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="3+">3+</option>
-                    </select>
-                </div>
+      <div className="flex justify-center py-10">
+        <div className="bg-[#0F101A] p-8 rounded-2xl shadow-lg w-full max-w-3xl border border-[#939DB8]/10">
+          <h2 className="text-2xl mb-4">Enter Your Details</h2>
 
-                <div className="pred-education">
-                    <label htmlFor="">Education</label>
-                    <select name="education" id="education" value={formData.education} onChange={handleChange} required className="border p-2 w-full">
-                        <option value="">-- select Education --</option>
-                        <option value="Graduate">Graduate</option>
-                        <option value="Not Graduate">Not Graduate</option>
-                    </select>
-                </div>
+          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 gap-x-8">
+            {/* Gender */}
+            <div>
+              <label className="block mb-2">Gender</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Select Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
 
-                <div className="pred-self-employed">
-                    <label htmlFor="">Self Employed</label>
-                    <select name="employed" id="employed" value={formData.employed} onChange={handleChange} required className="border p-2 w-full">
-                        <option value="">-- select Self Employed --</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
+            {/* Married Status */}
+            <div>
+              <label className="block mb-2">Married Status</label>
+              <select
+                name="married"
+                value={formData.married}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Select Status --</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
 
-                <div className="pred-credit-history">
-                    <label htmlFor="">Credit History</label>
-                    <select name="credit" id="credit" value={formData.credit} onChange={handleChange} required className="border p-2 w-full">
-                        <option value="">-- select Credit History --</option>
-                        <option value="1.0">1.0</option>
-                        <option value="0.0">0.0</option>
-                    </select>
-                </div>
+            {/* Dependents */}
+            <div>
+              <label className="block mb-2">Dependents</label>
+              <select
+                name="dependents"
+                value={formData.dependents}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Dependents --</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="3+">3+</option>
+              </select>
+            </div>
 
-                <div className="pred-area">
-                    <label htmlFor="">Property Area</label>
-                    <select name="area" id="area" value={formData.area} onChange={handleChange} required className="border p-2 w-full" >
-                        <option value="">-- select Property Area --</option>
-                        <option value="Rural">Rural</option>
-                        <option value="Semiurban">Semiurban</option>
-                        <option value="Urban">Urban</option>
-                    </select>
-                </div>
+            {/* Education */}
+            <div>
+              <label className="block mb-2">Education</label>
+              <select
+                name="education"
+                value={formData.education}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Education --</option>
+                <option value="Graduate">Graduate</option>
+                <option value="Not Graduate">Not Graduate</option>
+              </select>
+            </div>
 
-                <div className="pred-age">
-                    <label htmlFor="">Age</label>
-                    <input type="text"name="age" id="age" placeholder="Enter Age" value={formData.age} onChange={handleChange} required className="border p-2 w-full" />
-                </div>
+            {/* Self Employed */}
+            <div>
+              <label className="block mb-2">Self Employed</label>
+              <select
+                name="employed"
+                value={formData.employed}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Select --</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
 
-                <div className="pred-appicant-income">
-                    <label htmlFor="ApplicantIncome">Applicant Income</label>
-                    <input type="text" name="ApplicantIncome" id="ApplicantIncome" placeholder="Enter Applicant Income" value={formData.ApplicantIncome} onChange={handleChange} required className="border p-2 w-full" />
-                </div>
+            {/* Credit History */}
+            <div>
+              <label className="block mb-2">Credit History</label>
+              <select
+                name="credit"
+                value={formData.credit}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Credit History --</option>
+                <option value="1.0">1.0</option>
+                <option value="0.0">0.0</option>
+              </select>
+            </div>
 
-                <div className="pred-coapp-income">
-                    <label htmlFor="">Coapplicant Income</label>
-                    <input type="text" name="CoapplicantIncome" id="CoapplicantIncome" placeholder="Enter Coapplicant Income" value={formData.CoapplicantIncome} onChange={handleChange} required className="border p-2 w-full" />
-                </div>
+            {/* Property Area */}
+            <div>
+              <label className="block mb-2">Property Area</label>
+              <select
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">-- Select Area --</option>
+                <option value="Rural">Rural</option>
+                <option value="Semiurban">Semiurban</option>
+                <option value="Urban">Urban</option>
+              </select>
+            </div>
 
-                <div className="pred-loan-amount">
-                    <label htmlFor="">Loan Amount</label>
-                    <input type="text" name="LoanAmount" id="LoanAmount" placeholder="Enter Loan Amount" value={formData.LoanAmount} onChange={handleChange} required className="border p-2 w-full" />
-                </div>
+            {/* Age */}
+            <div>
+              <label className="block mb-2">Age</label>
+              <input
+                type="number"
+                name="age"
+                placeholder="Enter Age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
 
-                <div className="pred-loan-amount-term">
-                    <label htmlFor="">Loan Amount Term</label>
-                    <input type="text" name="Loan_Amount_Term" id="Loan_Amount_Term" placeholder="Enter Loan Amount Term" value={formData.Loan_Amount_Term} onChange={handleChange} required className="border p-2 w-full" />
-                </div>
+            {/* Applicant Income */}
+            <div>
+              <label className="block mb-2">Applicant Income</label>
+              <input
+                type="number"
+                name="ApplicantIncome"
+                placeholder="Enter Income"
+                value={formData.ApplicantIncome}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
 
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded text-center cursor-pointer w-full" >
-                    Predict
-                </button> 
+            {/* Coapplicant Income */}
+            <div>
+              <label className="block mb-2">Coapplicant Income</label>
+              <input
+                type="number"
+                name="CoapplicantIncome"
+                placeholder="Enter Coapplicant Income"
+                value={formData.CoapplicantIncome}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
 
-            </form>
+            {/* Loan Amount */}
+            <div>
+              <label className="block mb-2">Loan Amount</label>
+              <input
+                type="number"
+                name="LoanAmount"
+                placeholder="Enter Loan Amount"
+                value={formData.LoanAmount}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+
+            {/* Loan Term */}
+            <div>
+              <label className="block mb-2">Loan Term (Months)</label>
+              <input
+                type="number"
+                name="Loan_Amount_Term"
+                placeholder="Enter Term in Months"
+                value={formData.Loan_Amount_Term}
+                onChange={handleChange}
+                required
+                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="col-span-2 w-full bg-blue-500 p-3 rounded-lg font-semibold text-white cursor-pointer hover:bg-blue-600 transition-all"
+            >
+              🔍 Predict Eligibility
+            </button>
+          </form>
         </div>
-    )   
+      </div>
+
+      {result && (
+        <div className="predict-output flex justify-center mt-10">
+          <div className="bg-[#0F101A] p-10 rounded-3xl shadow-2xl w-full max-w-3xl border border-[#939DB8]/20">
+            <h2 className="text-center text-3xl font-semibold text-white mb-4">
+              Loan Status:{" "}
+              <span className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>
+                {result.message}
+              </span>
+            </h2>
+            <h2 className="text-center text-2xl font-medium text-[#939DB8]">
+              Estimated EMI: <span className="text-white">₹{result.message == "Loan Approved" ? result.emi : "N/A"}</span>
+            </h2>
+
+            {result.message == "Loan Approved" && (
+              <h2 className="text-center text-2xl font-medium text-[#939DB8]">
+                Loan Amount: <span className="text-white">₹{result.loanAmount || "N/A"}</span>
+              </h2>
+            )}
+          </div>
+        </div>
+      )}
+
+
+    </div>
+  )
 }
 
 export default page

@@ -1,7 +1,8 @@
+"use client";
+
 import React from 'react'
-
+import { useRouter } from 'next/navigation';
 import { FaRegUserCircle } from "react-icons/fa";
-
 
 import {
   SignedIn,
@@ -10,6 +11,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 
+import Image from 'next/image';
 
 const DotIcon = () => {
   return (
@@ -25,22 +27,29 @@ const DotIcon = () => {
 
 
 const navbar = () => {
+  const router = useRouter();
+
+  const handleNavigate = (path) => {
+    router.push(path);
+  };
+
   return (
     <nav className="navbar top-0 left-0 right-0 z-50 bg-[#0B0C14]/80 border[#727DA1]/15- fixed flex justify-center">
       <div className="navbar-content flex justify-between w-300">
         <div className="flex p-6 items-center">
-          <h1 className="cursor-pointer text-2xl font-bold px-4 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">LogoName</h1>
-          <div className="flex gap-6 pl-8">
-            <h2 className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">Home Loan Eligibilty Prediction</h2>
-            <h2 className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">EMI Calculator</h2>
+          {/* <h1 onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-4 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">LoGO</h1> */}
+          <Image src="/Logo_1.png" alt='...' width={250} height={250} priority onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-2 pt-1 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300" />
+          <div className="flex gap-6 pl-6">
+            <h2 onClick={() => handleNavigate('/predict')} className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">Home Loan Eligibilty Predictor</h2>
+            <h2 onClick={() => handleNavigate('/emi-calculator')} className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">EMI Calculator</h2>
           </div>
         </div>
         <SignedOut>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-6">
             <FaRegUserCircle className="text-2xl text-white" />
 
-            <div className="bg-white w-19 text-black px-4 py-2 rounded-md hover:bg-gray-200 transition duration-300">
-              <SignInButton />
+            <div className="bg-[#113551] w-21 text-white font-semibold px-4 py-2 rounded-md cursor-pointer hover:bg-[#0c1c2c] transition duration-300">
+              <SignInButton className="cursor-pointer" />
             </div>
           </div>
         </SignedOut>
