@@ -1,6 +1,6 @@
 "use client"; // Needed for event handling in Next.js App Router
 
-import { React, useRef, useState } from 'react'
+import { React, useRef, useState, useEffect } from 'react'
 
 const page = () => {
   const [formData, setFormData] = useState({
@@ -41,12 +41,18 @@ const page = () => {
       const data = await response.json();
       console.log(data);
       setResult(data);
-      resultRef.current?.scrollIntoView({ behavior : "smooth" });
+      // resultRef.current?.scrollIntoView({ behavior : "smooth" });
     } catch (error) {
       console.error("Error:", error);
       alert("Something went wrong!");
     }
   };
+
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [result]);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0c0c14] text-white p-14 pt-26">
@@ -177,9 +183,13 @@ const page = () => {
               <input
                 type="number"
                 name="age"
+                min="0"
                 placeholder="Enter Age"
                 value={formData.age}
                 onChange={handleChange}
+                onInput={(e) => {
+                  if (e.target.value < 0) e.target.value = 0;
+                }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -191,9 +201,13 @@ const page = () => {
               <input
                 type="number"
                 name="ApplicantIncome"
+                min="0"
                 placeholder="Enter Income"
                 value={formData.ApplicantIncome}
                 onChange={handleChange}
+                onInput={(e) => {
+                  if (e.target.value < 0) e.target.value = 0;
+                }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -205,9 +219,13 @@ const page = () => {
               <input
                 type="number"
                 name="CoapplicantIncome"
+                min="0"
                 placeholder="Enter Coapplicant Income"
                 value={formData.CoapplicantIncome}
                 onChange={handleChange}
+                onInput={(e) => {
+                  if (e.target.value < 0) e.target.value = 0;
+                }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -219,9 +237,13 @@ const page = () => {
               <input
                 type="number"
                 name="LoanAmount"
+                min="0"
                 placeholder="Enter Loan Amount"
                 value={formData.LoanAmount}
                 onChange={handleChange}
+                onInput={(e) => {
+                  if (e.target.value < 0) e.target.value = 0;
+                }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -233,9 +255,13 @@ const page = () => {
               <input
                 type="number"
                 name="Loan_Amount_Term"
+                min="0"
                 placeholder="Enter Term in Months"
                 value={formData.Loan_Amount_Term}
                 onChange={handleChange}
+                onInput={(e) => {
+                  if (e.target.value < 0) e.target.value = 0;
+                }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
