@@ -181,14 +181,21 @@ const page = () => {
             <div>
               <label className="block mb-2">Age</label>
               <input
-                type="number"
+                type="text"
                 name="age"
                 min="0"
                 placeholder="Enter Age"
                 value={formData.age}
-                onChange={handleChange}
-                onInput={(e) => {
-                  if (e.target.value < 0) e.target.value = 0;
+                // onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers & prevent exceeding 100
+                  if (/^\d*$/.test(value)) {
+                    const numericValue = parseInt(value, 10);
+                    if (numericValue <= 100 || value === "") {
+                      handleChange(e);
+                    }
+                  }
                 }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -199,14 +206,17 @@ const page = () => {
             <div>
               <label className="block mb-2">Applicant Income</label>
               <input
-                type="number"
+                type="text"
                 name="ApplicantIncome"
                 min="0"
                 placeholder="Enter Income"
                 value={formData.ApplicantIncome}
-                onChange={handleChange}
-                onInput={(e) => {
-                  if (e.target.value < 0) e.target.value = 0;
+                // onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if(/^\d*$/.test(value)) {
+                    handleChange(e);
+                  }
                 }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -217,14 +227,17 @@ const page = () => {
             <div>
               <label className="block mb-2">Coapplicant Income</label>
               <input
-                type="number"
+                type="text"
                 name="CoapplicantIncome"
                 min="0"
                 placeholder="Enter Coapplicant Income"
                 value={formData.CoapplicantIncome}
-                onChange={handleChange}
-                onInput={(e) => {
-                  if (e.target.value < 0) e.target.value = 0;
+                // onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if(/^\d*$/.test(value)) {
+                    handleChange(e);
+                  }
                 }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -235,14 +248,17 @@ const page = () => {
             <div>
               <label className="block mb-2">Loan Amount</label>
               <input
-                type="number"
+                type="text"
                 name="LoanAmount"
                 min="0"
                 placeholder="Enter Loan Amount"
                 value={formData.LoanAmount}
-                onChange={handleChange}
-                onInput={(e) => {
-                  if (e.target.value < 0) e.target.value = 0;
+                // onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if(/^\d*$/.test(value)) {
+                    handleChange(e);
+                  }
                 }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -253,14 +269,17 @@ const page = () => {
             <div>
               <label className="block mb-2">Loan Term (Months)</label>
               <input
-                type="number"
+                type="text"
                 name="Loan_Amount_Term"
                 min="0"
                 placeholder="Enter Term in Months"
                 value={formData.Loan_Amount_Term}
-                onChange={handleChange}
-                onInput={(e) => {
-                  if (e.target.value < 0) e.target.value = 0;
+                // onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if(/^\d*$/.test(value)) {
+                    handleChange(e);
+                  }
                 }}
                 required
                 className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -277,6 +296,8 @@ const page = () => {
         </div>
       </div>
 
+      
+      {/* add table down */}
       {result && (
         <div ref={resultRef} className="predict-output flex justify-center mt-10">
           <div className="bg-[#0F101A] p-10 rounded-3xl shadow-2xl w-full max-w-3xl border border-[#939DB8]/20">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const page = () => {
   const [loanAmount, setLoanAmount] = useState(0);
@@ -29,9 +30,17 @@ const page = () => {
         <div className="mb-4">
           <label className="block text-lg mb-2">Loan Amount (₹)</label>
           <input
-            type="number"
+            type="text"
             value={loanAmount}
-            onChange={(e) => setLoanAmount(e.target.value)}
+            min="0"
+            // onChange={(e) => setLoanAmount(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                setLoanAmount(value);
+              }
+            }}            
+            required
             className="w-full p-3 rounded-lg bg-[#0c1c2c] text-white focus:outline-none focus:ring focus:ring-[#387087]"
             placeholder="Enter Loan Amount"
           />
@@ -40,9 +49,20 @@ const page = () => {
         <div className="mb-4">
           <label className="block text-lg mb-2">Interest Rate (%)</label>
           <input
-            type="number"
+            type="text"
             value={interestRate}
-            onChange={(e) => setInterestRate(e.target.value)}
+            min="0"
+            // onChange={(e) => setInterestRate(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                const numericValue = parseFloat(value);
+                if (numericValue <= 100 || value === "") {
+                  setInterestRate(value);
+                }
+              }
+            }}
+            required
             className="w-full p-3 rounded-lg bg-[#0c1c2c] text-white focus:outline-none focus:ring focus:ring-[#387087]"
             placeholder="Enter Interest Rate"
           />
@@ -51,9 +71,20 @@ const page = () => {
         <div className="mb-4">
           <label className="block text-lg mb-2">Loan Term (Years)</label>
           <input
-            type="number"
+            type="text"
             value={loanTerm}
-            onChange={(e) => setLoanTerm(e.target.value)}
+            min="0"
+            // onChange={(e) => setLoanTerm(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                const numericValue = parseFloat(value);
+                if (numericValue <= 100 || value === "") {
+                  setLoanTerm(value);
+                }
+              }
+            }}
+            required
             className="w-full p-3 rounded-lg bg-[#0c1c2c] text-white focus:outline-none focus:ring focus:ring-[#387087]"
             placeholder="Enter Loan Term"
           />
@@ -68,7 +99,7 @@ const page = () => {
 
         {emi !== null && (
           <div className="mt-6 text-center">
-            <h3 className="text-2xl font-semibold">Estimated EMI: ₹{emi}</h3>
+            <h3 className="text-xl font-semibold">Estimated EMI: ₹{emi}</h3>
           </div>
         )}
       </div>
