@@ -23,7 +23,7 @@ const page = () => {
 
   return (
     <div className="min-h-screen bg-[#0c0c14] flex justify-center items-center p-10">
-      <div className="bg-[#113551] p-10 rounded-2xl shadow-2xl max-w-md w-full text-white">
+      <div className="bg-[#0F101A] border border-[#939DB8]/10 p-10 rounded-2xl shadow-2xl max-w-md w-full text-white">
         <h2 className="text-4xl font-semibold mb-6 text-center">EMI Calculator</h2>
 
         <div className="mb-4">
@@ -61,7 +61,7 @@ const page = () => {
 
         <button
           onClick={calculateEMI}
-          className="w-full bg-[#387087] p-3 rounded-lg font-semibold hover:bg-[#0c1c2c] transition-all duration-300"
+          className="w-full bg-blue-500 p-3 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300"
         >
           Calculate EMI
         </button>
