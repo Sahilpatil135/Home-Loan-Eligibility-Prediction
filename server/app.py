@@ -20,17 +20,17 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    
+
     try:
         #  Function to calculate EMI based on loan amount, loan term (in months), and interest rate.
         def calculate_emi(loan_amount, loan_term, rate=8.0):
-            
+
             rate = rate / (12 * 100)      # TODO : pass rate of each bank in future.
             if rate == 0:  # Edge case for zero interest (unlikely)
                 return loan_amount / loan_term  
             emi = (loan_amount * rate * (1 + rate) ** loan_term) / ((1 + rate) ** loan_term - 1)
             return round(emi, 2)
-        
+
         # Getting JSON data from requests
         data = request.get_json()
 
