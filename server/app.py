@@ -99,6 +99,8 @@ def predict():
         original_applicant_income = input_data['ApplicantIncome'].iloc[0]
         original_coapplicant_income = input_data['CoapplicantIncome'].iloc[0]
         original_age = input_data['Age'].iloc[0]
+        original_self_employed = input_data['Self_Employed'].iloc[0]
+        og_property_area = input_data['Property_Area'].iloc[0]
 
         # Calculate EMI and EMI-to-Income ratio
         input_data['EMI'] = input_data.apply(lambda x: calculate_emi(x['LoanAmount'], x['Loan_Amount_Term'], rate=8.0), axis=1)
@@ -133,6 +135,42 @@ def predict():
         # Prediction using the model
         prediction = model.predict(input_data)[0]
 
+        # def eligibilty_for_bank():
+        #     # Age eligibility
+        #     is_self_employed_eligible = original_self_employed == 1 and 18 <= original_age <= 65
+        #     is_salaried_eligible = original_self_employed == 0 and 18 <= original_age <= 60
+
+        #     # Income eligibility (assuming annual income)
+        #     is_metro = og_property_area == 1  # Let's say 1 = metro like Delhi, Mumbai etc.
+        #     income_requirement = 240000 if is_metro else 180000
+        #     income_eligible = original_applicant_income >= income_requirement
+
+        #     if (is_self_employed_eligible or is_salaried_eligible) and income_eligible:
+        #         bank_result = "Loan Approved"
+        #     else:
+        #         bank_result = "Loan Rejected"
+            
+        #     print(bank_result)
+        #     return bank_result
+
+        def kotak_bank_eligibility(age, self_employed, income, property_area):
+            is_self_employed_eligible = self_employed == 1 and 18 <= age <= 65
+            is_salaried_eligible = self_employed == 0 and 18 <= age <= 60
+
+            is_metro = property_area == 1  # 1 = metro cities
+            required_income = 20000 if is_metro else 15000
+
+            return (is_self_employed_eligible or is_salaried_eligible) and income >= required_income
+        
+        kotak_eligible = kotak_bank_eligibility(
+            age=original_age,
+            self_employed=original_self_employed,
+            income=original_applicant_income,  # Assuming monthly income
+            property_area=og_property_area
+        )
+
+        # for loan approval of kotak bank, if kotak_eligibile and prediction == 1 and EMI_to_income value <= 0.4 then return loan approved
+
 
         # Return result
         return jsonify({
@@ -140,7 +178,13 @@ def predict():
             "message": "Loan Approved" if prediction == 1 and EMI_to_income_value <= 0.4 else "Loan Rejected",
             "emi": int(EMI_value),
             "loanAmount": int(original_loan_amount),
-            "bankEmiBreakdown": emi_results
+            "bankEmiBreakdown": emi_results,
+            # "kotak_eligibility": kotak_eligible
+            "eligibility_results": {
+                # "HDFC Bank": hdfc_eligible,
+                # "SBI Bank": sbi_eligible,
+                "Kotak Mahindra Bank": bool(kotak_eligible)
+            }
         })
     
     except Exception as e:

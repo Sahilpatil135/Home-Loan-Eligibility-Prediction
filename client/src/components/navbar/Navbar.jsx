@@ -38,7 +38,7 @@ const navbar = () => {
       <div className="navbar-content flex justify-between w-300">
         <div className="flex p-6 items-center">
           {/* <h1 onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-4 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">LoGO</h1> */}
-          <Image src="/Logo_1.png" alt='...' width={200} height={0} layout="intrinsic" onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-2 pt-1 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300" />
+          <Image src="/navlogo.png" alt='...' width={180} height={0} layout="intrinsic" onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-2 pt-1 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300" />
           <div className="flex gap-6 pl-6">
             <h2 onClick={() => handleNavigate('/predict')} className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">Home Loan Eligibilty Predictor</h2>
             <h2 onClick={() => handleNavigate('/emi-calculator')} className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">EMI Calculator</h2>

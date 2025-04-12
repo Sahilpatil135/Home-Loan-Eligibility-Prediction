@@ -228,7 +228,7 @@ const page = () => {
 
             {/* Applicant Income */}
             <div>
-              <label className="block mb-2">Applicant Income</label>
+              <label className="block mb-2">Applicant Income (Monthly)</label>
               <input
                 type="text"
                 name="ApplicantIncome"
@@ -249,7 +249,7 @@ const page = () => {
 
             {/* Coapplicant Income */}
             <div>
-              <label className="block mb-2">Coapplicant Income</label>
+              <label className="block mb-2">Coapplicant Income (Monthly)</label>
               <input
                 type="text"
                 name="CoapplicantIncome"
@@ -357,6 +357,7 @@ const page = () => {
                 <TableHead className="text-white font-medium">Loan Tenure</TableHead>
                 <TableHead className="text-white font-medium">EMI</TableHead>
                 <TableHead className="text-white font-medium">Eligible?</TableHead>
+                <TableHead className="text-white font-medium">Loan Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -366,7 +367,8 @@ const page = () => {
                   <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
                   <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
                   <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A" }</TableCell>
-                  <TableCell className="text-green-400 font-medium">Yes</TableCell>
+                  <TableCell className={`font-medium ${result.eligibility_results[bank.name] ? "text-green-400" : "text-red-400"}`}>{result.eligibility_results[bank.name] ? "Yes" : "No"}</TableCell>
+                  <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   {/* need to update loan status acc to bank */}
                 </TableRow>
               ))}
             </TableBody>
