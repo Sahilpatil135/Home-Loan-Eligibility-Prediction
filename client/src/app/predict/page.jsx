@@ -2,6 +2,16 @@
 
 import { React, useRef, useState, useEffect } from 'react'
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
 const page = () => {
   const [formData, setFormData] = useState({
     gender: "",
@@ -17,6 +27,8 @@ const page = () => {
     LoanAmount: "",
     Loan_Amount_Term: "",
   });
+
+  const [banks, setBanks] = useState([]);
 
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
@@ -53,6 +65,18 @@ const page = () => {
       resultRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [result]);
+
+  useEffect(() => {
+    fetch("/data.json")
+      .then((res) => res.json())
+      .then((json) => {
+        setBanks(json.banks);
+      })
+      .catch((err) => {
+        console.error("Failed to load data.json", err);
+      });
+  }, []);
+
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0c0c14] text-white p-14 pt-26">
@@ -214,7 +238,7 @@ const page = () => {
                 // onChange={handleChange}
                 onChange={(e) => {
                   const value = e.target.value;
-                  if(/^\d*$/.test(value)) {
+                  if (/^\d*$/.test(value)) {
                     handleChange(e);
                   }
                 }}
@@ -235,7 +259,7 @@ const page = () => {
                 // onChange={handleChange}
                 onChange={(e) => {
                   const value = e.target.value;
-                  if(/^\d*$/.test(value)) {
+                  if (/^\d*$/.test(value)) {
                     handleChange(e);
                   }
                 }}
@@ -256,7 +280,7 @@ const page = () => {
                 // onChange={handleChange}
                 onChange={(e) => {
                   const value = e.target.value;
-                  if(/^\d*$/.test(value)) {
+                  if (/^\d*$/.test(value)) {
                     handleChange(e);
                   }
                 }}
@@ -277,7 +301,7 @@ const page = () => {
                 // onChange={handleChange}
                 onChange={(e) => {
                   const value = e.target.value;
-                  if(/^\d*$/.test(value)) {
+                  if (/^\d*$/.test(value)) {
                     handleChange(e);
                   }
                 }}
@@ -296,8 +320,7 @@ const page = () => {
         </div>
       </div>
 
-      
-      {/* add table down */}
+      {/* Loan status Displays  */}
       {result && (
         <div ref={resultRef} className="predict-output flex justify-center mt-10">
           <div className="bg-[#0F101A] p-10 rounded-3xl shadow-2xl w-full max-w-3xl border border-[#939DB8]/20">
@@ -308,7 +331,7 @@ const page = () => {
               </span>
             </h2>
             <h2 className="text-center text-2xl font-medium text-[#939DB8]">
-              Estimated EMI: <span className="text-white">₹{result.message == "Loan Approved" ? result.emi : "N/A"}</span>
+              Estimated EMI (According to 8% rate p.a.): <span className="text-white">₹{result.message == "Loan Approved" ? result.emi : "N/A"}</span>
             </h2>
 
             {result.message == "Loan Approved" && (
@@ -320,7 +343,43 @@ const page = () => {
         </div>
       )}
 
+      {/* Comparison of Banks  */}
+      {result && result.bankEmiBreakdown && (
+        <div className="bg-[#0F101A] p-6 rounded-lg shadow-md mt-10">
+          <Table>
+            <TableCaption className="text-neutral-400 text-md font-semibold mb-4">
+              Eligibility for Different Banks
+            </TableCaption>
+            <TableHeader>
+              <TableRow className="hover:bg-[#1f2233] transition-colors">
+                <TableHead className="text-white font-medium">Bank Name</TableHead>
+                <TableHead className="text-white font-medium">Rate Range</TableHead>
+                <TableHead className="text-white font-medium">Loan Tenure</TableHead>
+                <TableHead className="text-white font-medium">EMI</TableHead>
+                <TableHead className="text-white font-medium">Eligible?</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {result.bankEmiBreakdown.map((bank, index) => (
+                <TableRow key={index} className="even:bg-[#13141e] odd:bg-[#0F101A] hover:bg-[#1f2233] transition-colors border-b border-gray-700">
+                  <TableCell className="text-gray-300">{bank.name}</TableCell>
+                  <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
+                  <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
+                  <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A" }</TableCell>
+                  <TableCell className="text-green-400 font-medium">Yes</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
+      {/* <TableRow key={index}>
+              <TableCell>{bank.name}</TableCell>
+              <TableCell>{bank.min_rate.toFixed(2)}</TableCell>
+              <TableCell>{bank.max_rate.toFixed(2)}</TableCell>
+              <TableCell>{bank.loan_tenure}</TableCell>
+            </TableRow> */}
     </div>
   )
 }

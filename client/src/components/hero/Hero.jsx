@@ -32,7 +32,7 @@ const Hero = () => {
       <div className="hero-content text-center w-150">
         {/* <h4 className="text-2xl text-[#939DB8] ">LOGO</h4> */}
         <div className="flex justify-center">
-          <Image src="/Logo_1.png" alt="..." width={250} height={0} className="justify-center" />
+          <Image src="/Logo_3.png" alt="..." width={250} height={0} className="justify-center" />
         </div>
         {/* <h1 className="text-7xl font-semibold text-white mt-6">Predict. Qualify. Own Home.</h1>
         <h3 className="text-xl text-[#939DB8] mt-8">AI-powered home loan eligibility prediction for smarter, faster financial decisions.</h3>
