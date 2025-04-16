@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-model = joblib.load('rf.pkl')
+model = joblib.load('rfforty.pkl')
 scalar = joblib.load('vector.pkl')
 
 # Load bank data from JSON
@@ -96,11 +96,14 @@ def predict():
 
         # Save original loan amount before scaling
         original_loan_amount = input_data['LoanAmount'].iloc[0]
+        original_loan_term = input_data['Loan_Amount_Term'].iloc[0]
         original_applicant_income = input_data['ApplicantIncome'].iloc[0]
-        original_coapplicant_income = input_data['CoapplicantIncome'].iloc[0]
+        original_coapplicant_income = input_data['CoapplicantIncome'].iloc[0]        
         original_age = input_data['Age'].iloc[0]
         original_self_employed = input_data['Self_Employed'].iloc[0]
         og_property_area = input_data['Property_Area'].iloc[0]
+        og_education = input_data['Education'].iloc[0]
+        og_total_income = original_applicant_income + original_coapplicant_income
 
         # Calculate EMI and EMI-to-Income ratio
         input_data['EMI'] = input_data.apply(lambda x: calculate_emi(x['LoanAmount'], x['Loan_Amount_Term'], rate=8.0), axis=1)
@@ -153,23 +156,94 @@ def predict():
         #     print(bank_result)
         #     return bank_result
 
-        def kotak_bank_eligibility(age, self_employed, income, property_area):
+        def kotak_bank_eligibility(age, self_employed, income, property_area, loan_term, education):
             is_self_employed_eligible = self_employed == 1 and 18 <= age <= 65
-            is_salaried_eligible = self_employed == 0 and 18 <= age <= 60
+            is_salaried_eligible = self_employed == 0 and 18 <= age <= 60 and education == 1
 
             is_metro = property_area == 1  # 1 = metro cities
             required_income = 20000 if is_metro else 15000
 
-            return (is_self_employed_eligible or is_salaried_eligible) and income >= required_income
+            # Loan term should not exceed 25 years (in months)
+            is_loan_term_eligible = loan_term <= 300
+
+            return (is_self_employed_eligible or is_salaried_eligible) and income >= required_income and is_loan_term_eligible
         
         kotak_eligible = kotak_bank_eligibility(
             age=original_age,
             self_employed=original_self_employed,
-            income=original_applicant_income,  # Assuming monthly income
-            property_area=og_property_area
+            income=og_total_income,  # Assuming monthly income
+            property_area=og_property_area,
+            loan_term=original_loan_term,
+            education=og_education
         )
+        print(kotak_eligible)
 
         # for loan approval of kotak bank, if kotak_eligibile and prediction == 1 and EMI_to_income value <= 0.4 then return loan approved
+        def hdfc_bank_eligibility(age, self_employed, income):
+            # Age eligibility: 21 to 65 years for both salaried and self-employed
+            is_age_eligible = 21 <= age <= 65
+
+            if self_employed == 0:
+                # Salaried: income should be at least ₹10,000/month
+                is_income_eligible = income >= 10000
+            else:
+                # Self-employed: income should be at least ₹2,00,000/year (₹16,667/month approx)
+                is_income_eligible = income >= 16667
+
+            return is_age_eligible and is_income_eligible
+
+        # Example usage
+        hdfc_eligible = hdfc_bank_eligibility(
+            age=original_age,
+            self_employed=original_self_employed,
+            income=og_total_income  # Monthly income
+        )
+        print(hdfc_eligible)
+
+        def sbi_bank_eligibility(age):
+            is_age_eligible = 18 <= age <= 70
+            return is_age_eligible
+
+        # Example usage
+        sbi_eligible = sbi_bank_eligibility(age=original_age)
+        print(sbi_eligible)
+
+        def icici_bank_eligibility(age, self_employed, income):
+            # Age eligibility: 21 to 70 years for all applicants
+            is_age_eligible = 21 <= age <= 70
+
+            if self_employed == 0:
+                # Salaried: Minimum ₹25,000/month
+                is_income_eligible = income >= 25000
+            else:
+                # Self-employed: Minimum ₹30,000/month
+                is_income_eligible = income >= 30000
+
+            return is_age_eligible and is_income_eligible
+
+        # Example usage
+        icici_eligible = icici_bank_eligibility(
+            age=original_age,
+            self_employed=original_self_employed,
+            income=og_total_income  # Monthly income
+        )
+        print(icici_eligible)
+
+        def axis_bank_eligibility(age, loan_amount):
+            # Age criteria: 21 to 65 for both salaried and self-employed
+            is_age_eligible = 21 <= age <= 65
+
+            # Loan amount criteria: Minimum ₹3,00,000
+            is_loan_amount_eligible = loan_amount >= 300000
+
+            return is_age_eligible and is_loan_amount_eligible
+        
+        axis_eligibile = axis_bank_eligibility(
+            age = original_age,
+            # self_employed = original_self_employed,
+            loan_amount = original_loan_amount
+        )
+        print(axis_eligibile)
 
 
         # Return result
@@ -181,8 +255,10 @@ def predict():
             "bankEmiBreakdown": emi_results,
             # "kotak_eligibility": kotak_eligible
             "eligibility_results": {
-                # "HDFC Bank": hdfc_eligible,
-                # "SBI Bank": sbi_eligible,
+                "HDFC Bank": bool(hdfc_eligible),
+                "State Bank of India (SBI)": bool(sbi_eligible),
+                "ICICI Bank": bool(icici_eligible),
+                "Axis Bank": bool(axis_eligibile),
                 "Kotak Mahindra Bank": bool(kotak_eligible)
             }
         })

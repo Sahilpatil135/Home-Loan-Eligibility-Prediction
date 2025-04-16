@@ -366,9 +366,18 @@ const page = () => {
                   <TableCell className="text-gray-300">{bank.name}</TableCell>
                   <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
                   <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
-                  <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A" }</TableCell>
+                  <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A"}</TableCell>
                   <TableCell className={`font-medium ${result.eligibility_results[bank.name] ? "text-green-400" : "text-red-400"}`}>{result.eligibility_results[bank.name] ? "Yes" : "No"}</TableCell>
-                  <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   {/* need to update loan status acc to bank */}
+                  {/* <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   need to update loan status acc to bank */}
+                  <TableCell className={
+                    result.eligibility_results[bank.name] && result.message === "Loan Approved"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }>
+                    {result.eligibility_results[bank.name] && result.message === "Loan Approved"
+                      ? "Loan Approved"
+                      : "Loan Rejected"}                    
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
