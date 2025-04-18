@@ -37,7 +37,7 @@ const page = () => {
     Loan_Amount_Term: "",
   });
 
-  const [banks, setBanks] = useState([]);
+  const [criteriaData, setCriteriaData] = useState([])
 
   const [loanTermMessage, setLoanTermMessage] = useState("");
   const loanTermMessageRef = useRef(null);
@@ -61,11 +61,6 @@ const page = () => {
         },
         body: JSON.stringify(formData), // Send JSON data to Flask
       });
-
-      // const data = await response.json();
-      // console.log(data);
-      // setResult(data);
-      // resultRef.current?.scrollIntoView({ behavior : "smooth" });
 
       const data = await response.json();
       console.log(data);
@@ -96,15 +91,18 @@ const page = () => {
   }, [result]);
 
   useEffect(() => {
-    fetch("/data.json")
-      .then((res) => res.json())
-      .then((json) => {
-        setBanks(json.banks);
-      })
-      .catch((err) => {
-        console.error("Failed to load data.json", err);
-      });
-  }, []);
+    const fetchCriteria = async () => {
+      try {
+        const res = await fetch("/criteria.json")
+        const data = await res.json()
+        setCriteriaData(data)
+      } catch (error) {
+        console.error("Error loading criteria:", error)
+      }
+    }
+
+    fetchCriteria()
+  }, [])
 
 
   return (
@@ -355,7 +353,7 @@ const page = () => {
             {loanTermMessage}
           </div>
         </div>
-      )}       
+      )}
 
       {/* Loan status Displays  */}
       {result && (
@@ -405,7 +403,7 @@ const page = () => {
                       <TableCell className="text-gray-300">{bank.name}</TableCell>
                       <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
                       <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
-                      <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A"}</TableCell>
+                      <TableCell className="text-gray-300">{result.eligibility_results[bank.name] && result.message === "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A"}</TableCell>
                       <TableCell className={`font-medium ${result.eligibility_results[bank.name] ? "text-green-400" : "text-red-400"}`}>{result.eligibility_results[bank.name] ? "Yes" : "No"}</TableCell>
                       {/* <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   need to update loan status acc to bank */}
                       <TableCell className={
@@ -419,7 +417,7 @@ const page = () => {
                       </TableCell>
                     </TableRow>
                   </DialogTrigger>
-                  <DialogContent>
+                  {/* <DialogContent>
                     <DialogHeader>
                       <DialogTitle className="text-xl">{bank.name}</DialogTitle>
                       <DialogDescription className="text-sm text-gray-400">
@@ -427,8 +425,41 @@ const page = () => {
                         Loan Tenure: {bank.loan_tenure} months<br />
                         EMI Range: ₹{bank.min_emi} - ₹{bank.max_emi}
                       </DialogDescription>
+                      <div>
+                        <p className="text-sm font-semibold text-white mb-1">Loan Approval Criteria:</p>
+                        <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
+                          {criteriaData.find(c => c.bank === bank.name)?.criteria?.map((point, idx) => (
+                            <li key={idx}>{point}</li>
+                          )) || <li>No criteria available for this bank.</li>}
+                        </ul>
+                      </div>
                     </DialogHeader>
+                  </DialogContent> */}
+                  <DialogContent className="bg-[#1a1c2c] text-gray-200 rounded-2xl p-6 max-w-lg w-full border border-[#939DB8]/20">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-semibold text-white">
+                        {bank.name}
+                      </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="mt-4 space-y-2 text-sm">
+                      <p className="text-gray-400">
+                        <span className="font-medium text-white">Rate Range:</span> {bank.min_rate}% - {bank.max_rate}%<br />
+                        <span className="font-medium text-white">Loan Tenure:</span> {bank.loan_tenure} months<br />
+                        {/* <span className="font-medium text-white">EMI Range:</span> ₹{bank.min_emi} - ₹{bank.max_emi} */}
+                      </p>
+                    </div>
+
+                    <div className="mt-6">
+                      <p className="text-sm font-semibold text-white mb-2">Loan Approval Criteria:</p>
+                      <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        {criteriaData.find(c => c.bank === bank.name)?.criteria?.map((point, idx) => (
+                          <li key={idx}>{point}</li>
+                        )) || <li>No criteria available for this bank.</li>}
+                      </ul>
+                    </div>
                   </DialogContent>
+
                 </Dialog>
               ))}
             </TableBody>

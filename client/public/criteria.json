@@ -1,0 +1,26 @@
+[
+    {
+        "bank": "Kotak Mahindra Bank",
+        "criteria": [
+            "Salaried Employees age should be between 18 to 60 years.",
+            "Minimum income required for urban residents is ₹20,000/month and for semi-urban and rural residents is ₹15,000/month.",
+            "Minimum Qualification for Salaried Employee should be a Bachelor's Degree.",
+            "Self Employed Individuals age should be between 18 to 65 years.",
+            "No minimum qualification required for Self Employed Individuals."            
+        ]
+    },
+    {
+        "bank": "HDFC Bank",
+        "criteria": [
+            "Age should be between 21 to 65 years",
+            "Minimum income should be ₹10,000/month for Salaried Employees.",
+            "Minimum income should be ₹2,00,000 per annum for Self Employed Individuals."
+        ]
+    },
+    {
+        "bank": "State Bank of India (SBI)",
+        "criteria": [
+            "Age should be between 18 to 70 years"
+        ]
+    }
+]
