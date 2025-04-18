@@ -12,6 +12,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
 const page = () => {
   const [formData, setFormData] = useState({
     gender: "",
@@ -29,6 +38,9 @@ const page = () => {
   });
 
   const [banks, setBanks] = useState([]);
+
+  const [loanTermMessage, setLoanTermMessage] = useState("");
+  const loanTermMessageRef = useRef(null);
 
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
@@ -50,15 +62,32 @@ const page = () => {
         body: JSON.stringify(formData), // Send JSON data to Flask
       });
 
+      // const data = await response.json();
+      // console.log(data);
+      // setResult(data);
+      // resultRef.current?.scrollIntoView({ behavior : "smooth" });
+
       const data = await response.json();
       console.log(data);
-      setResult(data);
-      // resultRef.current?.scrollIntoView({ behavior : "smooth" });
+
+      if (data.loanTermMessage) {
+        setLoanTermMessage(data.loanTermMessage);
+        setResult(null); // clear previous result
+      } else {
+        setLoanTermMessage(""); // clear error if any
+        setResult(data);
+      }
     } catch (error) {
       console.error("Error:", error);
       alert("Something went wrong!");
     }
   };
+
+  useEffect(() => {
+    if (loanTermMessage && loanTermMessageRef.current) {
+      loanTermMessageRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [loanTermMessage]);
 
   useEffect(() => {
     if (result && resultRef.current) {
@@ -320,6 +349,14 @@ const page = () => {
         </div>
       </div>
 
+      {loanTermMessage && (
+        <div ref={loanTermMessageRef} className="flex justify-center mt-6">
+          <div className="bg-red-600/20 text-red-400 p-4 rounded-lg text-center max-w-2xl">
+            {loanTermMessage}
+          </div>
+        </div>
+      )}       
+
       {/* Loan status Displays  */}
       {result && (
         <div ref={resultRef} className="predict-output flex justify-center mt-10">
@@ -362,23 +399,37 @@ const page = () => {
             </TableHeader>
             <TableBody>
               {result.bankEmiBreakdown.map((bank, index) => (
-                <TableRow key={index} className="even:bg-[#13141e] odd:bg-[#0F101A] hover:bg-[#1f2233] transition-colors border-b border-gray-700">
-                  <TableCell className="text-gray-300">{bank.name}</TableCell>
-                  <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
-                  <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
-                  <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A"}</TableCell>
-                  <TableCell className={`font-medium ${result.eligibility_results[bank.name] ? "text-green-400" : "text-red-400"}`}>{result.eligibility_results[bank.name] ? "Yes" : "No"}</TableCell>
-                  {/* <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   need to update loan status acc to bank */}
-                  <TableCell className={
-                    result.eligibility_results[bank.name] && result.message === "Loan Approved"
-                      ? "text-green-400"
-                      : "text-red-400"
-                  }>
-                    {result.eligibility_results[bank.name] && result.message === "Loan Approved"
-                      ? "Loan Approved"
-                      : "Loan Rejected"}                    
-                  </TableCell>
-                </TableRow>
+                <Dialog key={index}>
+                  <DialogTrigger asChild>
+                    <TableRow className="even:bg-[#13141e] odd:bg-[#0F101A] hover:bg-[#1f2233] transition-colors border-b border-gray-700 cursor-pointer">
+                      <TableCell className="text-gray-300">{bank.name}</TableCell>
+                      <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
+                      <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
+                      <TableCell className="text-gray-300">{result.message == "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A"}</TableCell>
+                      <TableCell className={`font-medium ${result.eligibility_results[bank.name] ? "text-green-400" : "text-red-400"}`}>{result.eligibility_results[bank.name] ? "Yes" : "No"}</TableCell>
+                      {/* <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   need to update loan status acc to bank */}
+                      <TableCell className={
+                        result.eligibility_results[bank.name] && result.message === "Loan Approved"
+                          ? "text-green-400"
+                          : "text-red-400"
+                      }>
+                        {result.eligibility_results[bank.name] && result.message === "Loan Approved"
+                          ? "Loan Approved"
+                          : "Loan Rejected"}
+                      </TableCell>
+                    </TableRow>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-xl">{bank.name}</DialogTitle>
+                      <DialogDescription className="text-sm text-gray-400">
+                        Rate Range: {bank.min_rate}% - {bank.max_rate}%<br />
+                        Loan Tenure: {bank.loan_tenure} months<br />
+                        EMI Range: ₹{bank.min_emi} - ₹{bank.max_emi}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               ))}
             </TableBody>
           </Table>

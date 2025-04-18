@@ -245,6 +245,23 @@ def predict():
         )
         print(axis_eligibile)
 
+        # Validate loan term based on age
+        def evaluate_age_vs_loan_term(age):
+            # Assume retirement age is 60 for salaried, 65 for self-employed
+            # So max tenure in months = (retirement age - current age) * 12
+            max_salaried_tenure = max(0, (60 - age) * 12)
+            max_self_employed_tenure = max(0, (65 - age) * 12)
+
+            return max_salaried_tenure, max_self_employed_tenure
+
+        max_salaried_tenure, max_self_employed_tenure = evaluate_age_vs_loan_term(original_age)
+
+        loan_term_message = ""
+        if original_self_employed == 0 and original_loan_term > max_salaried_tenure:
+            loan_term_message = f"At age {original_age}, maximum allowed tenure for salaried individuals is {max_salaried_tenure} months. Please reduce loan term."
+        elif original_self_employed == 1 and original_loan_term > max_self_employed_tenure:
+            loan_term_message = f"At age {original_age}, maximum allowed tenure for self-employed individuals is {max_self_employed_tenure} months. Please reduce loan term."
+
 
         # Return result
         return jsonify({
@@ -253,7 +270,7 @@ def predict():
             "emi": int(EMI_value),
             "loanAmount": int(original_loan_amount),
             "bankEmiBreakdown": emi_results,
-            # "kotak_eligibility": kotak_eligible
+            "loanTermMessage": loan_term_message,
             "eligibility_results": {
                 "HDFC Bank": bool(hdfc_eligible),
                 "State Bank of India (SBI)": bool(sbi_eligible),
