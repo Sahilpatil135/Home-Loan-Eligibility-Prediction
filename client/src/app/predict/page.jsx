@@ -1,6 +1,6 @@
 "use client"; // Needed for event handling in Next.js App Router
 
-import { React, useRef, useState, useEffect } from 'react'
+import { React, useRef, useState, useEffect } from "react";
 
 import {
   Table,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 import {
   Dialog,
@@ -31,13 +31,13 @@ const page = () => {
     credit: "",
     area: "",
     age: "",
-    ApplicantIncome: "",
-    CoapplicantIncome: "",
-    LoanAmount: "",
-    Loan_Amount_Term: "",
+    ApplicantIncome: "50000",
+    CoapplicantIncome: "20000",
+    LoanAmount: "300000",
+    Loan_Amount_Term: "10",
   });
 
-  const [criteriaData, setCriteriaData] = useState([])
+  const [criteriaData, setCriteriaData] = useState([]);
 
   const [loanTermMessage, setLoanTermMessage] = useState("");
   const loanTermMessageRef = useRef(null);
@@ -47,8 +47,9 @@ const page = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData)
+    console.log(formData);
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents page reload
@@ -80,7 +81,10 @@ const page = () => {
 
   useEffect(() => {
     if (loanTermMessage && loanTermMessageRef.current) {
-      loanTermMessageRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      loanTermMessageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
   }, [loanTermMessage]);
 
@@ -93,17 +97,17 @@ const page = () => {
   useEffect(() => {
     const fetchCriteria = async () => {
       try {
-        const res = await fetch("/criteria.json")
-        const data = await res.json()
-        setCriteriaData(data)
+        const res = await fetch("/criteria.json");
+        const data = await res.json();
+        setCriteriaData(data);
       } catch (error) {
-        console.error("Error loading criteria:", error)
+        console.error("Error loading criteria:", error);
       }
-    }
+    };
 
-    fetchCriteria()
-  }, [])
-
+    fetchCriteria();
+  }, []);
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0c0c14] text-white p-14 pt-26">
@@ -113,7 +117,10 @@ const page = () => {
         <div className="bg-[#0F101A] p-8 rounded-2xl shadow-lg w-full max-w-3xl border border-[#939DB8]/10">
           <h2 className="text-2xl mb-4">Enter Your Details</h2>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 gap-x-8">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-2 gap-6 gap-x-8"
+          >
             {/* Gender */}
             <div>
               <label className="block mb-2">Gender</label>
@@ -253,88 +260,108 @@ const page = () => {
               />
             </div>
 
-            {/* Applicant Income */}
-            <div>
-              <label className="block mb-2">Applicant Income (Monthly)</label>
-              <input
-                type="text"
-                name="ApplicantIncome"
-                min="0"
-                placeholder="Enter Income"
-                value={formData.ApplicantIncome}
-                // onChange={handleChange}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    handleChange(e);
-                  }
-                }}
-                required
-                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
+            {/* Applicant Income Slider */}
+            <div className="mb-6">
+              <label className="block mb-2 text-white font-medium">
+                Applicant Income
+              </label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  name="ApplicantIncome"
+                  min="10000"
+                  max="1000000"
+                  step="1000"
+                  value={formData.ApplicantIncome}
+                  onChange={handleChange}
+                  className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+                <input
+                  type="number"
+                  name="ApplicantIncome"
+                  value={formData.ApplicantIncome}
+                  onChange={handleChange}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
             </div>
 
-            {/* Coapplicant Income */}
-            <div>
-              <label className="block mb-2">Coapplicant Income (Monthly)</label>
-              <input
-                type="text"
-                name="CoapplicantIncome"
-                min="0"
-                placeholder="Enter Coapplicant Income"
-                value={formData.CoapplicantIncome}
-                // onChange={handleChange}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    handleChange(e);
-                  }
-                }}
-                required
-                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
+            {/* Coapplicant Income Slider */}
+            <div className="mb-6">
+              <label className="block mb-2 text-white font-medium">
+                Coapplicant Income
+              </label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  name="CoapplicantIncome"
+                  min="10000"
+                  max="1000000"
+                  step="1000"
+                  value={formData.CoapplicantIncome}
+                  onChange={handleChange}
+                  className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+                <input
+                  type="number"
+                  name="CoapplicantIncome"
+                  value={formData.CoapplicantIncome}
+                  onChange={handleChange}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
             </div>
 
-            {/* Loan Amount */}
-            <div>
-              <label className="block mb-2">Loan Amount</label>
-              <input
-                type="text"
-                name="LoanAmount"
-                min="0"
-                placeholder="Enter Loan Amount"
-                value={formData.LoanAmount}
-                // onChange={handleChange}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    handleChange(e);
-                  }
-                }}
-                required
-                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
+            {/* Loan Amount Slider */}
+            <div className="mb-6">
+              <label className="block mb-2 text-white font-medium">
+                Loan Amount
+              </label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  name="LoanAmount"
+                  min="100000"
+                  max="50000000"
+                  step="5000"
+                  value={formData.LoanAmount}
+                  onChange={handleChange}
+                  className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+                <input
+                  type="number"
+                  name="LoanAmount"
+                  value={formData.LoanAmount}
+                  onChange={handleChange}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
             </div>
 
-            {/* Loan Term */}
-            <div>
-              <label className="block mb-2">Loan Term (Months)</label>
-              <input
-                type="text"
-                name="Loan_Amount_Term"
-                min="0"
-                placeholder="Enter Term in Months"
-                value={formData.Loan_Amount_Term}
-                // onChange={handleChange}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    handleChange(e);
-                  }
-                }}
-                required
-                className="w-full p-3 rounded-lg bg-[#181a25] border border-[#939DB8]/20 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
+            {/* Loan Term Slider */}
+            <div className="mb-6">
+              <label className="block mb-2 text-white font-medium">
+                Loan Term (years)
+              </label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  name="Loan_Amount_Term"
+                  min="1"
+                  max="40"
+                  step="1"
+                  value={formData.Loan_Amount_Term}
+                  onChange={handleChange}
+                  className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+                <input
+                  type="number"
+                  name="Loan_Amount_Term"
+                  value={formData.Loan_Amount_Term}
+                  onChange={handleChange}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
             </div>
 
             <button
@@ -357,21 +384,36 @@ const page = () => {
 
       {/* Loan status Displays  */}
       {result && (
-        <div ref={resultRef} className="predict-output flex justify-center mt-10">
+        <div
+          ref={resultRef}
+          className="predict-output flex justify-center mt-10"
+        >
           <div className="bg-[#0F101A] p-10 rounded-3xl shadow-2xl w-full max-w-3xl border border-[#939DB8]/20">
             <h2 className="text-center text-3xl font-semibold text-white mb-4">
               Loan Status:{" "}
-              <span className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>
+              <span
+                className={
+                  result.message === "Loan Approved"
+                    ? "text-green-400"
+                    : "text-red-400"
+                }
+              >
                 {result.message}
               </span>
             </h2>
             <h2 className="text-center text-2xl font-medium text-[#939DB8]">
-              Estimated EMI (According to 8% rate p.a.): <span className="text-white">₹{result.message == "Loan Approved" ? result.emi : "N/A"}</span>
+              Estimated EMI (According to 8% rate p.a.):{" "}
+              <span className="text-white">
+                ₹{result.message == "Loan Approved" ? result.emi : "N/A"}
+              </span>
             </h2>
 
             {result.message == "Loan Approved" && (
               <h2 className="text-center text-2xl font-medium text-[#939DB8]">
-                Loan Amount: <span className="text-white">₹{result.loanAmount || "N/A"}</span>
+                Loan Amount:{" "}
+                <span className="text-white">
+                  ₹{result.loanAmount || "N/A"}
+                </span>
               </h2>
             )}
           </div>
@@ -387,12 +429,22 @@ const page = () => {
             </TableCaption>
             <TableHeader>
               <TableRow className="hover:bg-[#1f2233] transition-colors">
-                <TableHead className="text-white font-medium">Bank Name</TableHead>
-                <TableHead className="text-white font-medium">Rate Range</TableHead>
-                <TableHead className="text-white font-medium">Loan Tenure</TableHead>
+                <TableHead className="text-white font-medium">
+                  Bank Name
+                </TableHead>
+                <TableHead className="text-white font-medium">
+                  Rate Range
+                </TableHead>
+                <TableHead className="text-white font-medium">
+                  Loan Tenure
+                </TableHead>
                 <TableHead className="text-white font-medium">EMI</TableHead>
-                <TableHead className="text-white font-medium">Eligible?</TableHead>
-                <TableHead className="text-white font-medium">Loan Status</TableHead>
+                <TableHead className="text-white font-medium">
+                  Eligible?
+                </TableHead>
+                <TableHead className="text-white font-medium">
+                  Loan Status
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -400,18 +452,42 @@ const page = () => {
                 <Dialog key={index}>
                   <DialogTrigger asChild>
                     <TableRow className="even:bg-[#13141e] odd:bg-[#0F101A] hover:bg-[#1f2233] transition-colors border-b border-gray-700 cursor-pointer">
-                      <TableCell className="text-gray-300">{bank.name}</TableCell>
-                      <TableCell className="text-gray-300">{bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}%</TableCell>
-                      <TableCell className="text-gray-300">{bank.loan_tenure}</TableCell>
-                      <TableCell className="text-gray-300">{result.eligibility_results[bank.name] && result.message === "Loan Approved" ? `₹${bank.min_emi} - ₹${bank.max_emi}` : "N/A"}</TableCell>
-                      <TableCell className={`font-medium ${result.eligibility_results[bank.name] ? "text-green-400" : "text-red-400"}`}>{result.eligibility_results[bank.name] ? "Yes" : "No"}</TableCell>
+                      <TableCell className="text-gray-300">
+                        {bank.name}
+                      </TableCell>
+                      <TableCell className="text-gray-300">
+                        {bank.min_rate.toFixed(2)}% - {bank.max_rate.toFixed(2)}
+                        %
+                      </TableCell>
+                      <TableCell className="text-gray-300">
+                        {bank.loan_tenure}
+                      </TableCell>
+                      <TableCell className="text-gray-300">
+                        {result.eligibility_results[bank.name] &&
+                        result.message === "Loan Approved"
+                          ? `₹${bank.min_emi} - ₹${bank.max_emi}`
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell
+                        className={`font-medium ${
+                          result.eligibility_results[bank.name]
+                            ? "text-green-400"
+                            : "text-red-400"
+                        }`}
+                      >
+                        {result.eligibility_results[bank.name] ? "Yes" : "No"}
+                      </TableCell>
                       {/* <TableCell className={result.message === "Loan Approved" ? "text-green-400" : "text-red-400"}>{result.message}</TableCell>   need to update loan status acc to bank */}
-                      <TableCell className={
-                        result.eligibility_results[bank.name] && result.message === "Loan Approved"
-                          ? "text-green-400"
-                          : "text-red-400"
-                      }>
-                        {result.eligibility_results[bank.name] && result.message === "Loan Approved"
+                      <TableCell
+                        className={
+                          result.eligibility_results[bank.name] &&
+                          result.message === "Loan Approved"
+                            ? "text-green-400"
+                            : "text-red-400"
+                        }
+                      >
+                        {result.eligibility_results[bank.name] &&
+                        result.message === "Loan Approved"
                           ? "Loan Approved"
                           : "Loan Rejected"}
                       </TableCell>
@@ -444,22 +520,32 @@ const page = () => {
 
                     <div className="mt-4 space-y-2 text-sm">
                       <p className="text-gray-400">
-                        <span className="font-medium text-white">Rate Range:</span> {bank.min_rate}% - {bank.max_rate}%<br />
-                        <span className="font-medium text-white">Loan Tenure:</span> {bank.loan_tenure} months<br />
+                        <span className="font-medium text-white">
+                          Rate Range:
+                        </span>{" "}
+                        {bank.min_rate}% - {bank.max_rate}%<br />
+                        <span className="font-medium text-white">
+                          Loan Tenure:
+                        </span>{" "}
+                        {bank.loan_tenure} months
+                        <br />
                         {/* <span className="font-medium text-white">EMI Range:</span> ₹{bank.min_emi} - ₹{bank.max_emi} */}
                       </p>
                     </div>
 
                     <div className="mt-6">
-                      <p className="text-sm font-semibold text-white mb-2">Loan Approval Criteria:</p>
+                      <p className="text-sm font-semibold text-white mb-2">
+                        Loan Approval Criteria:
+                      </p>
                       <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
-                        {criteriaData.find(c => c.bank === bank.name)?.criteria?.map((point, idx) => (
-                          <li key={idx}>{point}</li>
-                        )) || <li>No criteria available for this bank.</li>}
+                        {criteriaData
+                          .find((c) => c.bank === bank.name)
+                          ?.criteria?.map((point, idx) => (
+                            <li key={idx}>{point}</li>
+                          )) || <li>No criteria available for this bank.</li>}
                       </ul>
                     </div>
                   </DialogContent>
-
                 </Dialog>
               ))}
             </TableBody>
@@ -474,8 +560,7 @@ const page = () => {
               <TableCell>{bank.loan_tenure}</TableCell>
             </TableRow> */}
     </div>
-  )
-}
+  );
+};
 
-export default page
-
+export default page;
