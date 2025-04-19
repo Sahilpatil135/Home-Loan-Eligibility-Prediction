@@ -112,7 +112,7 @@ def predict():
         EMI_to_income_value = input_data['EMI_to_Income'].iloc[0]
         print(EMI_to_income_value)
 
-        # EMI for different banks
+        # EMI for different banks in rupees
         banks = load_bank_data()
         emi_results = []
 
@@ -131,12 +131,20 @@ def predict():
 
         print(emi_results)
 
+        # Converting rupees into dollar as csv is in dollar
+        input_data['ApplicantIncome'] = input_data['ApplicantIncome'] / 85
+        input_data['CoapplicantIncome'] = input_data['CoapplicantIncome'] / 85
+        input_data['LoanAmount'] = input_data['LoanAmount'] / 85
+        input_data['EMI'] = input_data['EMI'] / 85
+        input_data['EMI_to_Income'] = input_data['EMI'] / (input_data['ApplicantIncome'] + input_data['CoapplicantIncome'])
+
         # Select numerical columns for scaling
         num_cols = ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'EMI', 'EMI_to_Income']
         input_data[num_cols] = scalar.transform(input_data[num_cols])
 
         # Prediction using the model
         prediction = model.predict(input_data)[0]
+        print("Prediction: ",prediction)
 
         # def eligibilty_for_bank():
         #     # Age eligibility
@@ -179,7 +187,7 @@ def predict():
         print(kotak_eligible)
 
         # for loan approval of kotak bank, if kotak_eligibile and prediction == 1 and EMI_to_income value <= 0.4 then return loan approved
-        def hdfc_bank_eligibility(age, self_employed, income):
+        def hdfc_bank_eligibility(age, self_employed, income, loan_term):
             # Age eligibility: 21 to 65 years for both salaried and self-employed
             is_age_eligible = 21 <= age <= 65
 
@@ -189,26 +197,33 @@ def predict():
             else:
                 # Self-employed: income should be at least ₹2,00,000/year (₹16,667/month approx)
                 is_income_eligible = income >= 16667
+            
+            # Loan term should not exceed 30 years (in months)
+            is_loan_term_eligible = loan_term <= 360
 
-            return is_age_eligible and is_income_eligible
+            return is_age_eligible and is_income_eligible and is_loan_term_eligible
 
         # Example usage
         hdfc_eligible = hdfc_bank_eligibility(
             age=original_age,
             self_employed=original_self_employed,
-            income=og_total_income  # Monthly income
+            income=og_total_income,  # Monthly income
+            loan_term = original_loan_term
         )
         print(hdfc_eligible)
 
-        def sbi_bank_eligibility(age):
+        def sbi_bank_eligibility(age, loan_term):
             is_age_eligible = 18 <= age <= 70
-            return is_age_eligible
+
+            # Loan term should not exceed 30 years (in months)
+            is_loan_term_eligible = loan_term <= 360
+            return is_age_eligible and is_loan_term_eligible
 
         # Example usage
-        sbi_eligible = sbi_bank_eligibility(age=original_age)
+        sbi_eligible = sbi_bank_eligibility(age=original_age, loan_term=original_loan_term)
         print(sbi_eligible)
 
-        def icici_bank_eligibility(age, self_employed, income):
+        def icici_bank_eligibility(age, self_employed, income, loan_term):
             # Age eligibility: 21 to 70 years for all applicants
             is_age_eligible = 21 <= age <= 70
 
@@ -218,30 +233,38 @@ def predict():
             else:
                 # Self-employed: Minimum ₹30,000/month
                 is_income_eligible = income >= 30000
+            
+            # Loan term should not exceed 30 years (in months)
+            is_loan_term_eligible = loan_term <= 360
 
-            return is_age_eligible and is_income_eligible
+            return is_age_eligible and is_income_eligible and is_loan_term_eligible
 
         # Example usage
         icici_eligible = icici_bank_eligibility(
             age=original_age,
             self_employed=original_self_employed,
-            income=og_total_income  # Monthly income
+            income=og_total_income,  # Monthly income
+            loan_term=original_loan_term
         )
         print(icici_eligible)
 
-        def axis_bank_eligibility(age, loan_amount):
+        def axis_bank_eligibility(age, loan_amount, loan_term):
             # Age criteria: 21 to 65 for both salaried and self-employed
             is_age_eligible = 21 <= age <= 65
 
             # Loan amount criteria: Minimum ₹3,00,000
             is_loan_amount_eligible = loan_amount >= 300000
 
-            return is_age_eligible and is_loan_amount_eligible
+            # Loan term should not exceed 30 years (in months)
+            is_loan_term_eligible = loan_term <= 360
+
+            return is_age_eligible and is_loan_amount_eligible and is_loan_term_eligible
         
         axis_eligibile = axis_bank_eligibility(
             age = original_age,
             # self_employed = original_self_employed,
-            loan_amount = original_loan_amount
+            loan_amount = original_loan_amount,
+            loan_term=original_loan_term
         )
         print(axis_eligibile)
 

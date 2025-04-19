@@ -22,5 +22,20 @@
         "criteria": [
             "Age should be between 18 to 70 years"
         ]
+    },
+    {
+        "bank": "ICICI Bank",
+        "criteria": [
+            "Age should be between 21 to 70 years",
+            "Minimum income should be ₹25,000/month for Salaried Employees.",
+            "Minimum income should be ₹30,000/month for Self Employed Individuals."
+        ]
+    },
+    {
+        "bank": "Axis Bank",
+        "criteria": [
+            "Age should be between 21 to 65 years",
+            "Minimum Loan Amount should be ₹3,00,000"
+        ]
     }
 ]
