@@ -22,6 +22,14 @@ const page = () => {
     }
   };
 
+  const formatIndianNumber = (value) => {
+    const number = parseInt(String(value).replace(/,/g, ""), 10);
+    return isNaN(number)
+      ? ""
+      : number.toLocaleString("en-IN");
+  };
+
+
   return (
     <div className="min-h-screen bg-[#0c0c14] flex flex-col justify-center items-center p-16">
       <div className="bg-[#0F101A] border border-[#939DB8]/10 p-10 mt-14 rounded-2xl shadow-2xl max-w-md w-full text-white">
@@ -31,13 +39,12 @@ const page = () => {
           <label className="block text-lg mb-2">Loan Amount (₹)</label>
           <input
             type="text"
-            value={loanAmount}
-            min="0"
-            // onChange={(e) => setLoanAmount(e.target.value)}
+            value={formatIndianNumber(loanAmount)}
+            inputMode="numeric"
             onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setLoanAmount(value);
+              const raw = e.target.value.replace(/,/g, "");
+              if (/^\d*$/.test(raw)) {
+                setLoanAmount(raw);
               }
             }}
             required
@@ -99,7 +106,7 @@ const page = () => {
 
         {emi !== null && (
           <div className="mt-6 text-center">
-            <h3 className="text-xl font-semibold">Estimated EMI: ₹{emi}</h3>
+            <h3 className="text-xl font-semibold">Estimated EMI: ₹{Number(emi).toLocaleString("en-IN")}</h3>
           </div>
         )}
       </div>

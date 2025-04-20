@@ -35,7 +35,7 @@ const page = () => {
     ApplicantIncome: "50000",
     CoapplicantIncome: "20000",
     LoanAmount: "300000",
-    Loan_Amount_Term: "10",
+    Loan_Amount_Term: "120",
   });
 
   const [criteriaData, setCriteriaData] = useState([]);
@@ -78,6 +78,11 @@ const page = () => {
       console.error("Error:", error);
       alert("Something went wrong!");
     }
+  };
+
+  const formatIndianNumber = (num) => {
+    if (!num) return '';
+    return Number(num).toLocaleString('en-IN');
   };
 
   useEffect(() => {
@@ -277,12 +282,27 @@ const page = () => {
                   onChange={handleChange}
                   className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />
-                <input
+                {/* <input
                   type="number"
                   name="ApplicantIncome"
                   value={formData.ApplicantIncome}
                   onChange={handleChange}
                   className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                /> */}
+                <input
+                  type="text"
+                  name="ApplicantIncomeFormatted"
+                  value={formatIndianNumber(formData.ApplicantIncome)}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                    handleChange({
+                      target: {
+                        name: 'ApplicantIncome',
+                        value: numericValue,
+                      },
+                    });
+                  }}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none"
                 />
               </div>
             </div>
@@ -296,19 +316,34 @@ const page = () => {
                 <input
                   type="range"
                   name="CoapplicantIncome"
-                  min="10000"
+                  min="0"
                   max="1000000"
                   step="1000"
                   value={formData.CoapplicantIncome}
                   onChange={handleChange}
                   className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />
-                <input
+                {/* <input
                   type="number"
                   name="CoapplicantIncome"
                   value={formData.CoapplicantIncome}
                   onChange={handleChange}
                   className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                /> */}
+                <input
+                  type="text"
+                  name="CoapplicantIncomeFormatted"
+                  value={formatIndianNumber(formData.CoapplicantIncome)}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                    handleChange({
+                      target: {
+                        name: 'CoapplicantIncome',
+                        value: numericValue,
+                      },
+                    });
+                  }}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none"
                 />
               </div>
             </div>
@@ -329,12 +364,28 @@ const page = () => {
                   onChange={handleChange}
                   className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />
-                <input
+                {/* <input
                   type="number"
                   name="LoanAmount"
                   value={formData.LoanAmount}
                   onChange={handleChange}
                   className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                /> */}
+                {/* Number Input with formatted display */}
+                <input
+                  type="text"
+                  name="LoanAmountFormatted"
+                  value={formatIndianNumber(formData.LoanAmount)}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                    handleChange({
+                      target: {
+                        name: 'LoanAmount',
+                        value: numericValue,
+                      },
+                    });
+                  }}
+                  className="w-28 px-3 py-1.5 rounded-md bg-[#1a1c29] text-white border border-[#3d3f50] focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all duration-150 appearance-none"
                 />
               </div>
             </div>
@@ -406,7 +457,8 @@ const page = () => {
             <h2 className="text-center text-2xl font-medium text-[#939DB8]">
               Estimated EMI (According to 8% rate p.a.):{" "}
               <span className="text-white">
-                ₹{result.message == "Loan Approved" ? result.emi : "N/A"}
+                {/* ₹{result.message == "Loan Approved" ? result.emi : "N/A"} */}
+                ₹{result.message == "Loan Approved" ? Number(result.emi).toLocaleString("en-IN") : "N/A"}
               </span>
             </h2>
 
@@ -414,7 +466,8 @@ const page = () => {
               <h2 className="text-center text-2xl font-medium text-[#939DB8]">
                 Loan Amount:{" "}
                 <span className="text-white">
-                  ₹{result.loanAmount || "N/A"}
+                  {/* ₹{result.loanAmount || "N/A"} */}
+                  ₹{result.loanAmount ? result.loanAmount.toLocaleString("en-IN") : "N/A"}
                 </span>
               </h2>
             )}
@@ -467,7 +520,7 @@ const page = () => {
                       <TableCell className="text-gray-300">
                         {result.eligibility_results[bank.name] &&
                           result.message === "Loan Approved"
-                          ? `₹${bank.min_emi} - ₹${bank.max_emi}`
+                          ? `₹${Number(bank.min_emi).toLocaleString("en-IN")} - ₹${Number(bank.max_emi).toLocaleString("en-IN")}`
                           : "N/A"}
                       </TableCell>
                       <TableCell
@@ -493,25 +546,7 @@ const page = () => {
                           : "Loan Rejected"}
                       </TableCell>
                     </TableRow>
-                  </DialogTrigger>
-                  {/* <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle className="text-xl">{bank.name}</DialogTitle>
-                      <DialogDescription className="text-sm text-gray-400">
-                        Rate Range: {bank.min_rate}% - {bank.max_rate}%<br />
-                        Loan Tenure: {bank.loan_tenure} months<br />
-                        EMI Range: ₹{bank.min_emi} - ₹{bank.max_emi}
-                      </DialogDescription>
-                      <div>
-                        <p className="text-sm font-semibold text-white mb-1">Loan Approval Criteria:</p>
-                        <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
-                          {criteriaData.find(c => c.bank === bank.name)?.criteria?.map((point, idx) => (
-                            <li key={idx}>{point}</li>
-                          )) || <li>No criteria available for this bank.</li>}
-                        </ul>
-                      </div>
-                    </DialogHeader>
-                  </DialogContent> */}
+                  </DialogTrigger>              
                   <DialogContent className="bg-[#1a1c2c] text-gray-200 rounded-2xl p-6 max-w-lg w-full border border-[#939DB8]/20">
                     <DialogHeader>
                       <DialogTitle className="text-2xl font-semibold text-white">
@@ -553,7 +588,7 @@ const page = () => {
           </Table>
         </div>
       )}
-      
+
       <div className="mt-8 bg-[#1a1c2b] p-4 rounded-lg border border-[#2e3244]">
         <h3 className="text-white text-md font-semibold mb-2">Disclaimer</h3>
         <p className="text-sm text-gray-400">
