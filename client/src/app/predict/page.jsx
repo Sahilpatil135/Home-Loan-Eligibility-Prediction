@@ -1,6 +1,7 @@
 "use client"; // Needed for event handling in Next.js App Router
 
 import { React, useRef, useState, useEffect } from "react";
+import Faqs from "@/components/faqs/Faqs";
 
 import {
   Table,
@@ -49,7 +50,7 @@ const page = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     console.log(formData);
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents page reload
@@ -107,7 +108,7 @@ const page = () => {
 
     fetchCriteria();
   }, []);
-  
+
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0c0c14] text-white p-14 pt-26">
@@ -262,8 +263,8 @@ const page = () => {
 
             {/* Applicant Income Slider */}
             <div className="mb-6">
-              <label className="block mb-2 text-white font-medium">
-                Applicant Income
+              <label className="block mb-2 text-white">
+                Applicant Income (Monthly)
               </label>
               <div className="flex items-center gap-4">
                 <input
@@ -288,8 +289,8 @@ const page = () => {
 
             {/* Coapplicant Income Slider */}
             <div className="mb-6">
-              <label className="block mb-2 text-white font-medium">
-                Coapplicant Income
+              <label className="block mb-2 text-white">
+                Coapplicant Income (Monthly)
               </label>
               <div className="flex items-center gap-4">
                 <input
@@ -341,15 +342,16 @@ const page = () => {
             {/* Loan Term Slider */}
             <div className="mb-6">
               <label className="block mb-2 text-white font-medium">
-                Loan Term (years)
+                {/* Loan Term (years) */}
+                Loan Term (Months)
               </label>
               <div className="flex items-center gap-4">
                 <input
                   type="range"
                   name="Loan_Amount_Term"
-                  min="1"
-                  max="40"
-                  step="1"
+                  min="0"
+                  max="720"
+                  step="10"
                   value={formData.Loan_Amount_Term}
                   onChange={handleChange}
                   className="w-full h-2 bg-[#2a2c3b] rounded-lg appearance-none cursor-pointer accent-blue-500"
@@ -464,16 +466,15 @@ const page = () => {
                       </TableCell>
                       <TableCell className="text-gray-300">
                         {result.eligibility_results[bank.name] &&
-                        result.message === "Loan Approved"
+                          result.message === "Loan Approved"
                           ? `₹${bank.min_emi} - ₹${bank.max_emi}`
                           : "N/A"}
                       </TableCell>
                       <TableCell
-                        className={`font-medium ${
-                          result.eligibility_results[bank.name]
-                            ? "text-green-400"
-                            : "text-red-400"
-                        }`}
+                        className={`font-medium ${result.eligibility_results[bank.name]
+                          ? "text-green-400"
+                          : "text-red-400"
+                          }`}
                       >
                         {result.eligibility_results[bank.name] ? "Yes" : "No"}
                       </TableCell>
@@ -481,13 +482,13 @@ const page = () => {
                       <TableCell
                         className={
                           result.eligibility_results[bank.name] &&
-                          result.message === "Loan Approved"
+                            result.message === "Loan Approved"
                             ? "text-green-400"
                             : "text-red-400"
                         }
                       >
                         {result.eligibility_results[bank.name] &&
-                        result.message === "Loan Approved"
+                          result.message === "Loan Approved"
                           ? "Loan Approved"
                           : "Loan Rejected"}
                       </TableCell>
@@ -552,13 +553,20 @@ const page = () => {
           </Table>
         </div>
       )}
+      
+      <div className="mt-8 bg-[#1a1c2b] p-4 rounded-lg border border-[#2e3244]">
+        <h3 className="text-white text-md font-semibold mb-2">Disclaimer</h3>
+        <p className="text-sm text-gray-400">
+          The Home Loan Eligibility Prediction tool is intended to serve as a general self-help planning resource.
+          The results are based on the information you provide and are for illustrative purposes only.
+          Actual loan eligibility may vary based on individual circumstances and the policies of financial institutions.
+          For accurate and personalized loan information, please contact or visit your nearest bank branch.
+        </p>
+      </div>
 
-      {/* <TableRow key={index}>
-              <TableCell>{bank.name}</TableCell>
-              <TableCell>{bank.min_rate.toFixed(2)}</TableCell>
-              <TableCell>{bank.max_rate.toFixed(2)}</TableCell>
-              <TableCell>{bank.loan_tenure}</TableCell>
-            </TableRow> */}
+
+      <Faqs />
+
     </div>
   );
 };

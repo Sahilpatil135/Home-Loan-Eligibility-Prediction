@@ -103,7 +103,11 @@ def predict():
         original_self_employed = input_data['Self_Employed'].iloc[0]
         og_property_area = input_data['Property_Area'].iloc[0]
         og_education = input_data['Education'].iloc[0]
+        og_credit_history = input_data['Credit_History'].iloc[0]
         og_total_income = original_applicant_income + original_coapplicant_income
+
+        # Calculate Total Income 
+        input_data['TotalIncome'] = input_data['ApplicantIncome'] + input_data['CoapplicantIncome']
 
         # Calculate EMI and EMI-to-Income ratio
         input_data['EMI'] = input_data.apply(lambda x: calculate_emi(x['LoanAmount'], x['Loan_Amount_Term'], rate=8.0), axis=1)
@@ -135,34 +139,18 @@ def predict():
         input_data['ApplicantIncome'] = input_data['ApplicantIncome'] / 85
         input_data['CoapplicantIncome'] = input_data['CoapplicantIncome'] / 85
         input_data['LoanAmount'] = input_data['LoanAmount'] / 85
+        input_data['TotalIncome'] = input_data['TotalIncome'] / 85
         input_data['EMI'] = input_data['EMI'] / 85
         input_data['EMI_to_Income'] = input_data['EMI'] / (input_data['ApplicantIncome'] + input_data['CoapplicantIncome'])
 
         # Select numerical columns for scaling
-        num_cols = ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'EMI', 'EMI_to_Income']
+        num_cols = ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'TotalIncome', 'EMI', 'EMI_to_Income']
         input_data[num_cols] = scalar.transform(input_data[num_cols])
 
         # Prediction using the model
         prediction = model.predict(input_data)[0]
         print("Prediction: ",prediction)
 
-        # def eligibilty_for_bank():
-        #     # Age eligibility
-        #     is_self_employed_eligible = original_self_employed == 1 and 18 <= original_age <= 65
-        #     is_salaried_eligible = original_self_employed == 0 and 18 <= original_age <= 60
-
-        #     # Income eligibility (assuming annual income)
-        #     is_metro = og_property_area == 1  # Let's say 1 = metro like Delhi, Mumbai etc.
-        #     income_requirement = 240000 if is_metro else 180000
-        #     income_eligible = original_applicant_income >= income_requirement
-
-        #     if (is_self_employed_eligible or is_salaried_eligible) and income_eligible:
-        #         bank_result = "Loan Approved"
-        #     else:
-        #         bank_result = "Loan Rejected"
-            
-        #     print(bank_result)
-        #     return bank_result
 
         def kotak_bank_eligibility(age, self_employed, income, property_area, loan_term, education):
             is_self_employed_eligible = self_employed == 1 and 18 <= age <= 65
@@ -284,6 +272,10 @@ def predict():
             loan_term_message = f"At age {original_age}, maximum allowed tenure for salaried individuals is {max_salaried_tenure} months. Please reduce loan term."
         elif original_self_employed == 1 and original_loan_term > max_self_employed_tenure:
             loan_term_message = f"At age {original_age}, maximum allowed tenure for self-employed individuals is {max_self_employed_tenure} months. Please reduce loan term."
+
+
+        if og_credit_history == 0 and EMI_to_income_value > 0.25:
+            prediction = 0  # Force rejection
 
 
         # Return result
