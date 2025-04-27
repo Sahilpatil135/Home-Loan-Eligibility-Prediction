@@ -37,7 +37,6 @@ const navbar = () => {
     <nav className="navbar top-0 left-0 right-0 z-50 bg-[#0B0C14]/80 border[#727DA1]/15- fixed flex justify-center">
       <div className="navbar-content flex justify-between w-300">
         <div className="flex p-6 items-center">
-          {/* <h1 onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-4 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">LoGO</h1> */}
           <Image src="/navlogo.png" alt='...' width={180} height={0} layout="intrinsic" onClick={() => handleNavigate('/')} className="cursor-pointer text-2xl font-bold px-2 pt-1 text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300" />
           <div className="flex gap-6 pl-6">
             <h2 onClick={() => handleNavigate('/predict')} className="cursor-pointer text-[#FAF9F6] hover:text-[#aad6ec] transition-colors duration-300">Home Loan Eligibilty Predictor</h2>
