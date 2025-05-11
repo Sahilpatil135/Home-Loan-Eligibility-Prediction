@@ -40,6 +40,16 @@ cd Home-Loan-Eligibility-Prediction
 ### 2. Start the Backend (Flask)
 ```bash
 cd server
+python -m venv venv
+
+# Activate venv
+
+# Windows:
+venv\Scripts\activate
+
+# macOS/Linux:
+source venv/bin/activate
+
 pip install -r requirements.txt
 python app.py
 ```
